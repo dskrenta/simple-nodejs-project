@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <title>simple-nodejs-project</title>
+  <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <h1>Create Profile</h1>
+    <p>Name <input type="text" id="nameInput"></input></p>
+    <p>Email <input type="email" id="emailInput"></input></head></p>
+    <p>Password <input type="password" id="passwordInput"></input></p>
+    <p><button id="createProfileButton">Create Profile</button></p>
+    <hr />
+    <h1>Get Profile</h1>
+    <p>Email <input type="email" id="email"></input></head></p>
+    <p><button id="getProfileButton">Get Profile</button></p>
+    <script type="text/javascript">
+      const personInput = {
+        name: '',
+        email: '',
+        password: ''
+      };
+
+      function updateInputField(id, method, key) {
+        document.getElementById(id).addEventListener(method, (e) => {
+          personInput[key] = e.target.value;
+        });
+      }
+
+      updateInputField('nameInput', 'keyup', 'name');
+      updateInputField('emailInput', 'keyup', 'email');
+      updateInputField('passwordInput', 'keyup', 'password');
+
+      document.getElementById('createProfileButton').addEventListener('click', (e) => {
+        console.log('create profile click', personInput);
+        fetch(`http://localhost:3000/createProfile?name=${personInput.name}&email=${personInput.email}&password=${personInput.password}`);
+      });
+
+      function addEvent(elementId, event, cb) {
+        document.getElementById(elementId).addEventListener(event, (e) => cb(e));
+      }
+
+      let emailToFetch = '';
+
+      addEvent('email', 'keyup', (e) => {
+        emailToFetch = e.target.value;
+      })
+
+      addEvent('getProfileButton', 'click', async (e) => {
+        try {
+          const fetchRes = await fetch(`http://localhost:3000/getProfile?email=${emailToFetch}`);
+          console.log(await fetchRes.json());
+        }
+        catch (error) {
+          conslole.error(error);
+        }
+      });
+    </script>
+  </body>
+</html>
